@@ -170,10 +170,13 @@
         const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
         const TMDB_IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
 
-        // Function to fetch movies from TMDB
+        // Function to fetch movies from Flask backend
         async function fetchMovies(endpoint) {
             try {
-                const response = await fetch(`${TMDB_BASE_URL}${endpoint}?api_key=${TMDB_API_KEY}&language=en-US&page=1`);
+                const response = await fetch(`/api/movies${endpoint}`);
+                if (!response.ok) {
+                    throw new Error('Failed to fetch data');
+                }
                 const data = await response.json();
                 return data.results;
             } catch (error) {
@@ -208,9 +211,9 @@
 
         // Populate movie scrollers
         async function initializeMovies() {
-            const latestMovies = await fetchMovies('/movie/now_playing');
-            const popularMovies = await fetchMovies('/movie/popular');
-            const topRatedMovies = await fetchMovies('/movie/top_rated');
+            const latestMovies = await fetchMovies('/now_playing');
+            const popularMovies = await fetchMovies('/popular');
+            const topRatedMovies = await fetchMovies('/top_rated');
 
             if (latestMovies.length > 0) {
                 setFeaturedMovie(latestMovies[0]);

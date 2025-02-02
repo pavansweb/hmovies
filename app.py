@@ -1,13 +1,43 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, jsonify
+from flask_cors import CORS
 import requests
 import json     
 
 app = Flask(__name__)
+CORS(app)
 
 TMDB_API_KEY = '789c2869ddf724127863ae4e4780f6b6'  # Replace with your TMDB API key
-VIDBINGE_API_URL = 'https://vidb.in/api/' #Replace with vidbinge url api if it has changed
+TMDB_BASE_URL = "https://api.themoviedb.org/3"
 
+@app.route('/api/movies/<endpoint>', methods=['GET'])
+def fetch_movies(endpoint):
+    """Fetches movies from TMDB (e.g., popular, trending, upcoming)"""
+    
+    url = f"{TMDB_BASE_URL}/movie/{endpoint}?api_key={TMDB_API_KEY}&language=en-US&page=1"
+    
+    try:
+        response = requests.get(url)
+        response.raise_for_status()
+        data = response.json()
+        return jsonify(data)  # Send JSON response to frontend
+    except requests.exceptions.RequestException as e:
+        return jsonify({"error": str(e)}), 500
 
+@app.route('/api/search', methods=['GET'])
+def search_movies():
+    query = request.args.get('query', '')
+    if not query:
+        return jsonify({"error": "Query parameter is required"}), 400
+
+    url = f"https://api.themoviedb.org/3/search/movie?api_key={TMDB_API_KEY}&query={query}"
+    
+    try:
+        response = requests.get(url)
+        response.raise_for_status()
+        data = response.json()
+        return jsonify(data)
+    except requests.exceptions.RequestException as e:
+        return jsonify({"error": str(e)}), 500
 
 @app.route('/search', methods=['GET', 'POST'])
 def search():
@@ -36,7 +66,7 @@ def search_movies(query, page):
 @app.route('/home')  # Both routes point to the same function
 def home():
     return render_template('index.html')
-    
+
 @app.route('/movie/<int:movie_id>')
 def movie(movie_id):
     try:
@@ -56,43 +86,6 @@ def get_movie_details(movie_id):
     response = requests.get(url)
     response.raise_for_status()
     return response.json()
-
-
-def get_vidbinge_links(title, year=None):
-  """Searches Vidbinge for streaming links. title is required others are optional"""
-
-  if not title:
-    return "No movie title given to vidbinge links fetcher"
-
-  search_query = f"{title} {year}" if year else title
-  url = f"{VIDBINGE_API_URL}search?q={search_query}"
-
-
-  try:
-      response = requests.get(url)
-      response.raise_for_status()
-      data = response.json()
-      movie_id = next((item['id'] for item in data['results'] if (item['title'].lower() == title.lower() and item.get('year') and str(item.get('year'))==year) ),None)
-
-
-      if movie_id:
-           links_url = f"{VIDBINGE_API_URL}sources/{movie_id}"
-           links_response = requests.get(links_url)
-
-           links_response.raise_for_status()
-           links_data = links_response.json()
-
-           return links_data.get('data', []) #return empty if links not found
-      else :
-
-           return []
-
-
-  except requests.exceptions.RequestException as e:
-      print(f"Error fetching links from Vidbinge: {e}")
-      return []
-
-
 
 
 
