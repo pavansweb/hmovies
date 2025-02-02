@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ movie.title }} | Horizon Movies</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #1a1a2e;
+            --secondary-color: #16213e;
+            --accent-color: #0f3460;
+            --text-color: #e94560;
+            --light-text: #ffffff;
+        }
+
+        body {
+            background: var(--primary-color);
+            color: var(--light-text);
+        }
+
+        .navbar {
+            background: var(--secondary-color) !important;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .navbar-brand img {
+            height: 50px;
+        }
+
+        .nav-link {
+            color: var(--light-text) !important;
+            transition: color 0.3s;
+        }
+
+        .nav-link:hover {
+            color: var(--text-color) !important;
+        }
+
+        .movie-title {
+            color: var(--text-color);
+        }
+
+        .movie-meta {
+            color: #888;
+        }
+
+        .movie-overview {
+            max-height: 150px;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: var(--text-color) var(--secondary-color);
+        }
+
+        .movie-overview::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .movie-overview::-webkit-scrollbar-track {
+            background: var(--secondary-color);
+            border-radius: 4px;
+        }
+
+        .movie-overview::-webkit-scrollbar-thumb {
+            background: var(--text-color);
+            border-radius: 4px;
+        }
+
+        .btn-custom {
+            background: var(--accent-color);
+            color: white;
+            transition: all 0.3s;
+        }
+
+        .btn-custom:hover {
+            background: var(--text-color);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .embed-container {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .embed-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+        .badge {
+            background: var(--accent-color);
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .navbar-brand img {
+                height: 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <img src="/static/images/img-horizon-dark.svg" alt="Horizon Movies">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#"><i class="fas fa-home"></i> Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#"><i class="fas fa-film"></i> Movies</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#"><i class="fas fa-tv"></i> TV Shows</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#"><i class="fas fa-star"></i> Watchlist</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mt-5 pt-4">
+        <div class="card bg-dark text-white mb-4">
+            <div class="card-body">
+                <h1 class="movie-title display-4">{{ movie.title }}</h1>
+                <div class="movie-meta d-flex flex-wrap gap-3 mb-3">
+                    <span class="badge"><i class="fas fa-calendar"></i> {{ movie.release_date }}</span>
+                    <span class="badge"><i class="fas fa-star"></i> {{ movie.vote_average }}/10</span>
+                    <span class="badge"><i class="fas fa-clock"></i> {{ movie.runtime }} min</span>
+                </div>
+                <div class="movie-overview mb-4">
+                    <p class="lead">{{ movie.overview }}</p>
+                </div>
+                <div class="d-flex gap-2 flex-wrap">
+                    <button class="btn btn-custom" id="watchlistBtn">
+                        <i class="fas fa-plus"></i> Add to Watchlist
+                    </button>
+                    <button class="btn btn-custom" data-bs-toggle="modal" data-bs-target="#shareModal">
+                        <i class="fas fa-share"></i> Share
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="embed-container mb-4">
+            <iframe src="{{ vidbinge_embed_url }}" allowfullscreen sandbox="allow-same-origin allow-forms allow-scripts allow-storage-access-by-user-activation allow-presentation"></iframe>
+        </div>
+    </main>
+
+    <!-- Share Modal -->
+    <div class="modal fade" id="shareModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content bg-dark text-white">
+                <div class="modal-header border-secondary">
+                    <h5 class="modal-title">Share Movie</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-custom"><i class="fab fa-facebook"></i> Facebook</button>
+                        <button class="btn btn-custom"><i class="fab fa-twitter"></i> Twitter</button>
+                        <button class="btn btn-custom"><i class="fab fa-whatsapp"></i> WhatsApp</button>
+                        <div class="input-group">
+                            <input type="text" class="form-control bg-dark text-white" id="currentUrlInput" readonly>
+                            <button class="btn btn-custom" onclick="copyLink()">Copy</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+    <script>
+         function setCurrentUrl() {
+            const currentUrl = window.location.href; // Get the current webpage URL
+            const urlInput = document.getElementById('currentUrlInput'); // Get the input element
+            urlInput.value = currentUrl; // Set the value of the input field to the current URL
+        }
+        window.onload = setCurrentUrl;
+        
+        // Watchlist button toggle
+        document.getElementById('watchlistBtn').addEventListener('click', function() {
+            this.innerHTML = this.innerHTML.includes('Add to') ? 
+                '<i class="fas fa-check"></i> Added to Watchlist' : 
+                '<i class="fas fa-plus"></i> Add to Watchlist';
+        });
+
+        // Copy link function
+        function copyLink() {
+        const currentUrl = window.location.href;
+
+        navigator.clipboard.writeText(currentUrl).then(() => {
+            alert('Link copied to clipboard: ' + currentUrl);
+        }).catch(err => {
+            console.error('Failed to copy link: ', err);
+            alert('Failed to copy link. Please try again.');
+        });
+    }
+    </script>
+</body>
+</html>

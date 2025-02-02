@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Horizon Movies - Your Ultimate Movie Destination</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #141414;
+            color: #ffffff;
+        }
+        .navbar {
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        .featured {
+            height: 80vh;
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: flex-end;
+            padding: 2rem;
+            margin-top: 56px;
+        }
+        .featured-content {
+            max-width: 500px;
+        }
+        .movie-scroller {
+            overflow-x: auto;
+            white-space: nowrap;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none;  /* Internet Explorer 10+ */
+        }
+        .movie-scroller::-webkit-scrollbar { /* WebKit */
+            width: 0;
+            height: 0;
+        }
+        .movie-card {
+            display: inline-block;
+            width: 160px;
+            margin-right: 10px;
+            vertical-align: top;
+            transition: transform 0.3s ease;
+        }
+        .movie-card:hover {
+            transform: scale(1.05);
+        }
+        .movie-card img {
+            width: 100%;
+            height: auto;
+            border-radius: 4px;
+        }
+        .movie-info {
+            white-space: normal;
+            padding: 0.5rem 0;
+        }
+        .movie-info h5 {
+            font-size: 0.9rem;
+            margin-bottom: 0.2rem;
+        }
+        .movie-info p {
+            font-size: 0.8rem;
+            margin-bottom: 0;
+            color: #aaa;
+        }
+        @media (min-width: 768px) {
+            .movie-grid {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: space-between;
+            }
+            .movie-card {
+                width: calc(20% - 10px);
+                margin-bottom: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">Horizon Movies</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#home">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#movies">Movies</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#tv-shows">TV Shows</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#my-list">My List</a>
+                        </li>
+                    </ul>
+                    <form class="d-flex" action="/search" method="get">
+                        <input class="form-control me-2" type="search" name="query" placeholder="Search movies..." aria-label="Search">
+                        <button class="btn btn-outline-light" type="submit">Search</button>
+                    </form>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="featured" id="featured">
+            <div class="featured-content">
+                <h2 id="featured-title" class="display-4">Featured Title</h2>
+                <p id="featured-overview" class="lead">Description of the featured movie or TV show goes here. Entice your viewers to watch!</p>
+                <a href="#" class="btn btn-danger btn-lg">Watch Now</a>
+            </div>
+        </section>
+
+        <section class="container mt-5" id="movies">
+            <h2 class="mb-3">Latest Movies</h2>
+            <div class="movie-scroller mb-5" id="latest-movies">
+                <!-- Latest movie cards will be dynamically inserted here -->
+            </div>
+
+            <h2 class="mb-3">Popular Movies</h2>
+            <div class="movie-scroller mb-5" id="popular-movies">
+                <!-- Popular movie cards will be dynamically inserted here -->
+            </div>
+
+            <h2 class="mb-3">Top Rated Movies</h2>
+            <div class="movie-scroller mb-5" id="top-rated-movies">
+                <!-- Top rated movie cards will be dynamically inserted here -->
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-dark text-center text-white py-3 mt-5">
+        <p>&copy; 2025 Horizon Movies. All rights reserved.</p>
+    </footer>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const TMDB_API_KEY = '789c2869ddf724127863ae4e4780f6b6';
+        const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
+        const TMDB_IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
+
+        // Function to fetch movies from TMDB
+        async function fetchMovies(endpoint) {
+            try {
+                const response = await fetch(`${TMDB_BASE_URL}${endpoint}?api_key=${TMDB_API_KEY}&language=en-US&page=1`);
+                const data = await response.json();
+                return data.results;
+            } catch (error) {
+                console.error('Error fetching movies:', error);
+                return [];
+            }
+        }
+
+        // Function to create movie cards
+        function createMovieCard(movie) {
+            return `
+                <div class="movie-card" data-movie-id="${movie.id}">
+                    <img src="${TMDB_IMAGE_BASE_URL}${movie.poster_path}" alt="${movie.title}">
+                    <div class="movie-info">
+                        <h5>${movie.title}</h5>
+                        <p>${movie.release_date.split('-')[0]}</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Function to set featured movie
+        function setFeaturedMovie(movie) {
+            const featured = document.getElementById('featured');
+            const featuredTitle = document.getElementById('featured-title');
+            const featuredOverview = document.getElementById('featured-overview');
+
+            featured.style.backgroundImage = `linear-gradient(to bottom, rgba(0,0,0,0.5), rgba(0,0,0,0.8)), url('${TMDB_IMAGE_BASE_URL}${movie.backdrop_path}')`;
+            featuredTitle.textContent = movie.title;
+            featuredOverview.textContent = movie.overview;
+        }
+
+        // Populate movie scrollers
+        async function initializeMovies() {
+            const latestMovies = await fetchMovies('/movie/now_playing');
+            const popularMovies = await fetchMovies('/movie/popular');
+            const topRatedMovies = await fetchMovies('/movie/top_rated');
+
+            if (latestMovies.length > 0) {
+                setFeaturedMovie(latestMovies[0]);
+            }
+
+            const latestMoviesContainer = document.getElementById('latest-movies');
+            const popularMoviesContainer = document.getElementById('popular-movies');
+            const topRatedMoviesContainer = document.getElementById('top-rated-movies');
+
+            latestMovies.forEach(movie => {
+                latestMoviesContainer.innerHTML += createMovieCard(movie);
+            });
+
+            popularMovies.forEach(movie => {
+                popularMoviesContainer.innerHTML += createMovieCard(movie);
+            });
+
+            topRatedMovies.forEach(movie => {
+                topRatedMoviesContainer.innerHTML += createMovieCard(movie);
+            });
+
+            // Add click event listeners to movie cards
+            document.querySelectorAll('.movie-card').forEach(card => {
+                card.addEventListener('click', () => {
+                    const movieId = card.dataset.movieId;
+                    window.location.href = `/movie/${movieId}`;
+                });
+            });
+        }
+
+        // Initialize the page
+        initializeMovies();
+    </script>
+</body>
+</html>
