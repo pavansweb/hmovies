@@ -88,18 +88,24 @@ def get_movie_details(movie_id):
     response.raise_for_status()
     return response.json()
 
-
-@app.route("/contact", methods=["GET", "POST"])
-def contact():
-    if request.method == "POST":
-        name = request.form.get("name")
-        email = request.form.get("email")
-        message = request.form.get("message")
-        
-        # Here you could process/store the data, send an email, etc.
-        return render_template("contact.html", success=True, name=name)
     
-    return render_template("contact.html", success=False)
+@app.route('/api/genres')
+def genres():
+    response = requests.get(f'{TMDB_BASE_URL}/genre/movie/list', params={
+        'api_key': TMDB_API_KEY
+    })
+    return jsonify(response.json())
+
+@app.route('/api/genre/<genre_id>')
+def genre_movies(genre_id):
+    response = requests.get(f'{TMDB_BASE_URL}/discover/movie', params={
+        'api_key': TMDB_API_KEY,
+        'with_genres': genre_id,
+        'sort_by': 'popularity.desc'
+    })
+    return jsonify(response.json())
+
+
     
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True,port=5001)
