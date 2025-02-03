@@ -4,81 +4,169 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ movie.title }} | Horizon Movies</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link rel="icon" href="/static/favicons/icons-cropped-cflix-32x32.png" sizes="32x32">
     <link rel="apple-touch-icon" href="/static/favicons/icons-cropped-cflix-180x180.png">
     <style>
         :root {
-            --primary-color: #1a1a2e;
-            --secondary-color: #16213e;
-            --accent-color: #0f3460;
-            --text-color: #e94560;
-            --light-text: #ffffff;
+            --primary-bg: #000000;
+            --secondary-bg: #111111;
+            --tertiary-bg: #1c1c1c;
+            --accent-color: #ff4d4d;
+            --text-color: #ffffff;
+            --text-secondary: #cccccc;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
         body {
-            background: var(--primary-color);
-            color: var(--light-text);
+            font-family: 'Arial', sans-serif;
+            background-color: var(--primary-bg);
+            color: var(--text-color);
+            line-height: 1.6;
         }
 
-        .navbar {
-            background: var(--secondary-color) !important;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        .header {
+            background: rgba(10, 10, 20, 0.8);
+            backdrop-filter: blur(20px);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 15px 0;
         }
 
-        .navbar-brand img {
-            height: 50px;
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            gap: 30px;
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
-        .nav-link {
-            color: var(--light-text) !important;
-            transition: color 0.3s;
+        .logo {
+            height: 40px;
+            width: auto;
         }
 
-        .nav-link:hover {
-            color: var(--text-color) !important;
+        .search-bar {
+            display: flex;
+            gap: 1rem;
+            flex: 1;
+            max-width: 600px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50px;
+            padding: 0.5rem 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .search-bar input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: white;
+            padding: 0.5rem;
+        }
+
+        .search-bar input:focus {
+            outline: none;
+        }
+
+        .search-bar input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .search-btn {
+            background: linear-gradient(45deg, #FF3366, #FF6B6B);
+            border: none;
+            border-radius: 25px;
+            padding: 0.5rem 1.5rem;
+            color: white;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .search-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(255, 51, 102, 0.4);
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .main-content {
+            margin-top: 20px;
+        }
+
+        .movie-header {
+            display: flex;
+            gap: 30px;
+            margin-bottom: 30px;
+            background-color: var(--secondary-bg);
+            padding: 30px;
+            border-radius: 10px;
+        }
+
+        .movie-poster {
+            width: 300px;
+            height: 450px;
+            object-fit: cover;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(255, 77, 77, 0.3);
+        }
+
+        .movie-info {
+            flex: 1;
         }
 
         .movie-title {
-            color: var(--text-color);
+            font-size: 2.5em;
+            color: var(--accent-color);
+            margin-bottom: 10px;
         }
 
         .movie-meta {
-            color: #888;
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
         }
 
         .movie-overview {
-            max-height: 150px;
-            overflow-y: auto;
-            scrollbar-width: thin;
-            scrollbar-color: var(--text-color) var(--secondary-color);
+            margin-bottom: 20px;
         }
 
-        .movie-overview::-webkit-scrollbar {
-            width: 8px;
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
         }
 
-        .movie-overview::-webkit-scrollbar-track {
-            background: var(--secondary-color);
-            border-radius: 4px;
+        .btn-primary {
+            background-color: var(--accent-color);
+            color: var(--text-color);
         }
 
-        .movie-overview::-webkit-scrollbar-thumb {
-            background: var(--text-color);
-            border-radius: 4px;
-        }
-
-        .btn-custom {
-            background: var(--accent-color);
-            color: white;
-            transition: all 0.3s;
-        }
-
-        .btn-custom:hover {
-            background: var(--text-color);
+        .btn-primary:hover {
+            background-color: #ff6666;
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         }
 
         .embed-container {
@@ -86,8 +174,8 @@
             padding-bottom: 56.25%;
             height: 0;
             overflow: hidden;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border-radius: 10px;
+            margin-bottom: 30px;
         }
 
         .embed-container iframe {
@@ -96,124 +184,304 @@
             left: 0;
             width: 100%;
             height: 100%;
-            border: 0;
+            border: none;
         }
 
-        .badge {
-            background: var(--accent-color);
-            color: white;
+        .cast-section {
+            margin-bottom: 30px;
+            background-color: var(--tertiary-bg);
+            padding: 30px;
+            border-radius: 10px;
+        }
+
+        .section-title {
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            color: var(--accent-color);
+        }
+
+        .cast-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 20px;
+        }
+
+        .cast-card {
+            background-color: var(--secondary-bg);
+            border-radius: 10px;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        .cast-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .cast-img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .cast-info {
+            padding: 10px;
+        }
+
+        .cast-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .cast-character {
+            font-size: 0.9em;
+            color: var(--text-secondary);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1001;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+
+        .modal-content {
+            background-color: var(--secondary-bg);
+            margin: 15% auto;
+            padding: 20px;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 500px;
+        }
+
+        .close {
+            color: var(--text-secondary);
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: var(--accent-color);
+        }
+
+        .share-buttons {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+
+        .share-button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+            color: var(--text-color);
+        }
+
+        .share-button.facebook { background-color: #3b5998; }
+        .share-button.twitter { background-color: #1da1f2; }
+        .share-button.whatsapp { background-color: #25d366; }
+
+        .share-button:hover {
+            opacity: 0.9;
+        }
+
+        .copy-link {
+            display: flex;
+            margin-top: 20px;
+        }
+
+        .copy-link input {
+            flex-grow: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 5px 0 0 5px;
+            background-color: var(--tertiary-bg);
+            color: var(--text-color);
+        }
+
+        .copy-link button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 0 5px 5px 0;
+            background-color: var(--accent-color);
+            color: var(--text-color);
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .copy-link button:hover {
+            background-color: #ff6666;
         }
 
         @media (max-width: 768px) {
-            .navbar-brand img {
-                height: 40px;
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .search-bar {
+                width: 100%;
+            }
+            .movie-header {
+                flex-direction: column;
+            }
+
+            .movie-poster {
+                width: 100%;
+                height: auto;
+                max-height: 450px;
+            }
+
+            .cast-grid {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
             }
         }
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
-        <div class="container">
-            <a class="navbar-brand" href="/">
-                <img src="/static/images/img-horizon-dark.svg" alt="Horizon Movies">
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/"><i class="fas fa-home"></i> Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/"><i class="fas fa-film"></i> Movies</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#"><i class="fas fa-star"></i> Watchlist</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-
-    <main class="container mt-5 pt-4">
-        <div class="card bg-dark text-white mb-4">
-            <div class="card-body">
-                <h1 class="movie-title display-4">{{ movie.title }}</h1>
-                <div class="movie-meta d-flex flex-wrap gap-3 mb-3">
-                    <span class="badge"><i class="fas fa-calendar"></i> {{ movie.release_date }}</span>
-                    <span class="badge"><i class="fas fa-star"></i> {{ movie.vote_average }}/10</span>
-                    <span class="badge"><i class="fas fa-clock"></i> {{ movie.runtime }} min</span>
+    <header class="header">
+       <div class="header-content">
+           <a href="/">
+               <img src="https://i.postimg.cc/pdsM4wht/horizon-logo-dark.png" alt="Horizon Movies" class="logo">
+           </a>
+           <form class="search-bar" action="/search" method="GET">
+               <input type="search" name="query" placeholder="Search movies..." aria-label="Search">
+               <button type="submit" class="search-btn">Search</button>
+           </form>
+       </div>
+   </header>
+    <main class="container main-content">
+        <div class="movie-header">
+            <img src="https://image.tmdb.org/t/p/w500{{ movie.poster_path }}" alt="{{ movie.title }}" class="movie-poster">
+            <div class="movie-info">
+                <h1 class="movie-title">{{ movie.title }}</h1>
+                <div class="movie-meta">
+                    <span class="meta-item"><i class="fas fa-calendar"></i> {{ movie.release_date }}</span>
+                    <span class="meta-item"><i class="fas fa-star"></i> {{ movie.vote_average }}/10</span>
+                    <span class="meta-item"><i class="fas fa-clock"></i> {{ movie.runtime }} min</span>
                 </div>
-                <div class="movie-overview mb-4">
-                    <p class="lead">{{ movie.overview }}</p>
-                </div>
-                <div class="d-flex gap-2 flex-wrap">
-                    <button class="btn btn-custom" id="watchlistBtn">
+                <p class="movie-overview">{{ movie.overview }}</p>
+                <div class="movie-actions">
+                    <button class="btn btn-primary" id="watchlistBtn">
                         <i class="fas fa-plus"></i> Add to Watchlist
                     </button>
-                    <button class="btn btn-custom" data-bs-toggle="modal" data-bs-target="#shareModal">
+                    <button class="btn btn-primary" id="shareBtn">
                         <i class="fas fa-share"></i> Share
                     </button>
                 </div>
             </div>
         </div>
 
-        <div class="embed-container mb-4">
+        <div class="embed-container">
             <iframe src="{{ vidbinge_embed_url }}" allowfullscreen sandbox="allow-same-origin allow-forms allow-scripts allow-storage-access-by-user-activation allow-presentation"></iframe>
         </div>
-    </main>
 
-    <!-- Share Modal -->
-    <div class="modal fade" id="shareModal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content bg-dark text-white">
-                <div class="modal-header border-secondary">
-                    <h5 class="modal-title">Share Movie</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="d-grid gap-2">
-                        <button class="btn btn-custom"><i class="fab fa-facebook"></i> Facebook</button>
-                        <button class="btn btn-custom"><i class="fab fa-twitter"></i> Twitter</button>
-                        <button class="btn btn-custom"><i class="fab fa-whatsapp"></i> WhatsApp</button>
-                        <div class="input-group">
-                            <input type="text" class="form-control bg-dark text-white" id="currentUrlInput" readonly>
-                            <button class="btn btn-custom" onclick="copyLink()">Copy</button>
-                        </div>
+        <section class="cast-section">
+            <h2 class="section-title">Cast</h2>
+            <div class="cast-grid">
+                {% for actor in movie.credits.cast[:12] %}
+                <div class="cast-card">
+                    {% if actor.profile_path %}
+                    <img src="https://image.tmdb.org/t/p/w500{{ actor.profile_path }}" class="cast-img" alt="{{ actor.name }}">
+                    {% else %}
+                    <div class="cast-img" style="background-color: #333; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-user fa-3x" style="color: #666;"></i>
+                    </div>
+                    {% endif %}
+                    <div class="cast-info">
+                        <div class="cast-name">{{ actor.name }}</div>
+                        <div class="cast-character">{{ actor.character }}</div>
                     </div>
                 </div>
+                {% endfor %}
+            </div>
+        </section>
+    </main>
+
+    <div id="shareModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Share Movie</h2>
+            <div class="share-buttons">
+                <button class="share-button facebook">Facebook</button>
+                <button class="share-button twitter">Twitter</button>
+                <button class="share-button whatsapp">WhatsApp</button>
+            </div>
+            <div class="copy-link">
+                <input type="text" id="linkInput" readonly>
+                <button id="copyLinkBtn">Copy</button>
             </div>
         </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+    <script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script>
     <script>
-         function setCurrentUrl() {
-            const currentUrl = window.location.href; // Get the current webpage URL
-            const urlInput = document.getElementById('currentUrlInput'); // Get the input element
-            urlInput.value = currentUrl; // Set the value of the input field to the current URL
-        }
-        window.onload = setCurrentUrl;
+        const watchlistBtn = document.getElementById('watchlistBtn');
+        const shareBtn = document.getElementById('shareBtn');
+        const shareModal = document.getElementById('shareModal');
+        const closeBtn = document.getElementsByClassName('close')[0];
+        const linkInput = document.getElementById('linkInput');
+        const copyLinkBtn = document.getElementById('copyLinkBtn');
 
-        // Watchlist button toggle
-        document.getElementById('watchlistBtn').addEventListener('click', function() {
+        watchlistBtn.addEventListener('click', function() {
             this.innerHTML = this.innerHTML.includes('Add to') ? 
                 '<i class="fas fa-check"></i> Added to Watchlist' : 
                 '<i class="fas fa-plus"></i> Add to Watchlist';
         });
 
-        // Copy link function
-        function copyLink() {
-        const currentUrl = window.location.href;
+        shareBtn.onclick = function() {
+            shareModal.style.display = "block";
+            linkInput.value = window.location.href;
+        }
 
-        navigator.clipboard.writeText(currentUrl).then(() => {
-            alert('Link copied to clipboard: ' + currentUrl);
-        }).catch(err => {
-            console.error('Failed to copy link: ', err);
-            alert('Failed to copy link. Please try again.');
+        closeBtn.onclick = function() {
+            shareModal.style.display = "none";
+        }
+
+        window.onclick = function(event) {
+            if (event.target == shareModal) {
+                shareModal.style.display = "none";
+            }
+        }
+
+        copyLinkBtn.onclick = function() {
+            linkInput.select();
+            document.execCommand("copy");
+            alert("Link copied to clipboard!");
+        }
+
+        // Implement share functionality for each button
+        document.querySelectorAll('.share-button').forEach(button => {
+            button.addEventListener('click', function() {
+                const platform = this.classList[1];
+                const url = encodeURIComponent(window.location.href);
+                const text = encodeURIComponent(f`Check out this movie!`);
+                let shareUrl;
+
+                switch(platform) {
+                    case 'facebook':
+                        shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
+                        break;
+                    case 'twitter':
+                        shareUrl = `https://twitter.com/intent/tweet?url=${url}&text=${text}`;
+                        break;
+                    case 'whatsapp':
+                        shareUrl = `https://api.whatsapp.com/send?text=${text} ${url}`;
+                        break;
+                }
+
+                window.open(shareUrl, '_blank');
+            });
         });
-    }
     </script>
 </body>
 </html>
+

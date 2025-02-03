@@ -57,6 +57,7 @@ def search():
 
 def search_movies(query, page):
     url = f'https://api.themoviedb.org/3/search/movie?api_key={TMDB_API_KEY}&query={query}&page={page}'
+    
     response = requests.get(url)
     response.raise_for_status()  # Raise HTTPError for bad responses (4xx or 5xx)
     data = response.json()
@@ -82,12 +83,23 @@ def movie(movie_id):
 
 
 def get_movie_details(movie_id):
-    url = f'https://api.themoviedb.org/3/movie/{movie_id}?api_key={TMDB_API_KEY}'
+    url = f'https://api.themoviedb.org/3/movie/{movie_id}?api_key={TMDB_API_KEY}&append_to_response=credits'
     response = requests.get(url)
     response.raise_for_status()
     return response.json()
 
 
-
+@app.route("/contact", methods=["GET", "POST"])
+def contact():
+    if request.method == "POST":
+        name = request.form.get("name")
+        email = request.form.get("email")
+        message = request.form.get("message")
+        
+        # Here you could process/store the data, send an email, etc.
+        return render_template("contact.html", success=True, name=name)
+    
+    return render_template("contact.html", success=False)
+    
 if __name__ == '__main__':
     app.run(debug=True)

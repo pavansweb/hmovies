@@ -3,189 +3,264 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Horizon Movies - Your Ultimate Movie Destination</title>
-    <link rel="icon" href="/static/favicons/icons-cropped-cflix-32x32.png" sizes="32x32">
-    <link rel="apple-touch-icon" href="/static/favicons/icons-cropped-cflix-180x180.png">
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Horizon Movies</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #141414;
+            font-family: 'Inter', sans-serif;
+            background: radial-gradient(circle at 50% -20%, #1a0533 0%, #090618 100%);
             color: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
         }
-        .navbar {
-            background-color: rgba(0, 0, 0, 0.8);
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(147, 51, 234, 0.15) 0%, transparent 70%),
+                radial-gradient(circle at 80% 70%, rgba(236, 72, 153, 0.15) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
         }
-        .navbar-brand {
-            font-size: 1.5rem;
-            font-weight: bold;
+
+        .search-container {
+            position: sticky;
+            top: 0;
+            background: rgba(6, 6, 15, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 1.25rem;
+            z-index: 1030;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
         }
-        .featured {
-            height: 80vh;
-            background-size: cover;
-            background-position: center;
+
+        .search-form {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .search-input {
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: white;
+            border-radius: 50px 0 0 50px;
+            padding: 0.875rem 1.75rem;
+            font-size: 1rem;
+        }
+
+        .search-input:focus {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(236, 72, 153, 0.5);
+            box-shadow: 0 0 0 2px rgba(236, 72, 153, 0.25);
+            color: white;
+        }
+
+        .search-btn {
+            background: linear-gradient(45deg, #EC4899, #8B5CF6);
+            border: none;
+            border-radius: 0 50px 50px 0;
+            padding: 0.875rem 1.75rem;
+            color: white;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .search-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        .movie-section {
+            position: relative;
+            padding: 2.5rem 2em;
+        }
+
+        .section-title {
+            font-size: clamp(1.75rem, 4vw, 2.25rem);
+            font-weight: 700;
+            background: linear-gradient(90deg, #EC4899, #8B5CF6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 2rem;
+            padding: 0 1.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        .movie-row {
             display: flex;
-            align-items: flex-end;
-            padding: 2rem;
-            margin-top: 106px; /* Increased to accommodate the search bar */
-        }
-        .featured-content {
-            max-width: 500px;
-        }
-        .movie-scroller {
             overflow-x: auto;
-            white-space: nowrap;
-            -webkit-overflow-scrolling: touch;
-            scrollbar-width: none; /* Firefox */
-            -ms-overflow-style: none;  /* Internet Explorer 10+ */
+            gap: 1.25rem;
+            padding: 0.5rem 1.5rem;
+            scroll-snap-type: x mandatory;
+            scrollbar-width: none;
         }
-        .movie-scroller::-webkit-scrollbar { /* WebKit */
-            width: 0;
-            height: 0;
+
+        .movie-row::-webkit-scrollbar {
+            display: none;
         }
+
         .movie-card {
-            display: inline-block;
-            width: 160px;
-            margin-right: 10px;
-            vertical-align: top;
-            transition: transform 0.3s ease;
+            flex: 0 0 auto;
+            width: clamp(180px, 40vw, 220px);
+            scroll-snap-align: start;
+            border-radius: 1.25rem;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            background: rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
         }
+
         .movie-card:hover {
-            transform: scale(1.05);
+            transform: translateY(-8px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+            border-color: rgba(236, 72, 153, 0.3);
         }
+
         .movie-card img {
             width: 100%;
-            height: auto;
-            border-radius: 4px;
+            aspect-ratio: 2/3;
+            object-fit: cover;
+            transition: transform 0.4s ease;
         }
+
+        .movie-card:hover img {
+            transform: scale(1.05);
+        }
+
         .movie-info {
-            white-space: normal;
-            padding: 0.5rem 0;
+            padding: 1.25rem;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.4));
         }
+
         .movie-info h5 {
-            font-size: 0.9rem;
-            margin-bottom: 0.2rem;
+            font-size: clamp(0.9375rem, 2.5vw, 1.0625rem);
+            margin-bottom: 0.5rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.95);
         }
+
         .movie-info p {
-            font-size: 0.8rem;
-            margin-bottom: 0;
-            color: #aaa;
+            font-size: clamp(0.8125rem, 2vw, 0.9375rem);
+            color: #EC4899;
+            margin: 0;
+            font-weight: 500;
         }
-        @media (min-width: 768px) {
-            .movie-grid {
-                display: flex;
-                flex-wrap: wrap;
-                justify-content: space-between;
+
+        .scroll-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            z-index: 2;
+            opacity: 0;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(8px);
+        }
+
+        .scroll-btn:hover {
+            background: rgba(236, 72, 153, 0.2);
+            border-color: rgba(236, 72, 153, 0.4);
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .scroll-btn.prev { left: 1rem; }
+        .scroll-btn.next { right: 1rem; }
+
+        .movie-section:hover .scroll-btn {
+            opacity: 1;
+        }
+
+        @media (max-width: 768px) {
+            .scroll-btn {
+                display: none;
             }
+            
+            .movie-section {
+                padding: 1.5rem 1.5em;
+            }
+            
+            .section-title {
+                padding: 0 1rem;
+                margin-bottom: 1.5rem;
+            }
+            
+            .movie-row {
+                padding: 0.5rem 1rem;
+                gap: 1rem;
+            }
+
             .movie-card {
-                width: calc(20% - 10px);
-                margin-bottom: 20px;
+                width: clamp(160px, 45vw, 200px);
             }
-        }
-        .search-section {
-            position: fixed;
-            top: 56px;
-            left: 0;
-            right: 0;
-            z-index: 1000;
         }
     </style>
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
-            <div class="container-fluid">
-                <a class="navbar-brand" href="#">Horizon Movies</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarContent">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li class="nav-item">
-                            <a class="nav-link active" href="#home">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#movies">Movies</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#tv-shows">TV Shows</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#my-list">My List</a>
-                        </li>
-                    </ul>
-                    
-                </div>
-            </div>
-        </nav>
-    </header>
+    <div class="overlay"></div>
+    
+    <div class="search-container">
+        <form class="search-form input-group" action="/search" method="GET">
+            <input type="search" class="form-control search-input" name="query" placeholder="Search movies..." aria-label="Search">
+            <button type="submit" class="btn search-btn">Search</button>
+        </form>
+    </div>
 
-    <section class="search-section py-3 bg-dark">
-        <div class="container">
-            <form class="d-flex" action="/search" method="get">
-                <input class="form-control me-2" type="search" name="query" placeholder="Search movies..." aria-label="Search">
-                <button class="btn btn-danger" type="submit">Search</button>
-            </form>
-        </div>
-    </section>
-
-    <main>
-        <section class="featured" id="featured">
-            <div class="featured-content">
-                <h2 id="featured-title" class="display-4">Featured Title</h2>
-                <p id="featured-overview" class="lead">Description of the featured movie or TV show goes here. Entice your viewers to watch!</p>
-                <a href="#" class="btn btn-danger btn-lg">Watch Now</a>
-            </div>
-        </section>
-
-        <section class="container mt-5" id="movies">
-            <h2 class="mb-3">Latest Movies</h2>
-            <div class="movie-scroller mb-5" id="latest-movies">
-                <!-- Latest movie cards will be dynamically inserted here -->
+    <main class="container-fluid px-0">
+        <section id="movies">
+            <div class="movie-section">
+                <h2 class="section-title">Latest Releases</h2>
+                <button class="scroll-btn prev">←</button>
+                <button class="scroll-btn next">→</button>
+                <div class="movie-row" id="latest-movies"></div>
             </div>
 
-            <h2 class="mb-3">Popular Movies</h2>
-            <div class="movie-scroller mb-5" id="popular-movies">
-                <!-- Popular movie cards will be dynamically inserted here -->
+            <div class="movie-section">
+                <h2 class="section-title">Popular Now</h2>
+                <button class="scroll-btn prev">←</button>
+                <button class="scroll-btn next">→</button>
+                <div class="movie-row" id="popular-movies"></div>
             </div>
 
-            <h2 class="mb-3">Top Rated Movies</h2>
-            <div class="movie-scroller mb-5" id="top-rated-movies">
-                <!-- Top rated movie cards will be dynamically inserted here -->
+            <div class="movie-section">
+                <h2 class="section-title">Top Rated</h2>
+                <button class="scroll-btn prev">←</button>
+                <button class="scroll-btn next">→</button>
+                <div class="movie-row" id="top-rated-movies"></div>
             </div>
         </section>
     </main>
 
-    <footer class="bg-dark text-center text-white py-3 mt-5">
-        <p>&copy; 2025 Horizon Movies. All rights reserved.</p>
-    </footer>
-
-    <!-- Bootstrap Bundle with Popper -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        const TMDB_API_KEY = '789c2869ddf724127863ae4e4780f6b6';
-        const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
         const TMDB_IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
 
-        // Function to fetch movies from Flask backend
         async function fetchMovies(endpoint) {
             try {
                 const response = await fetch(`/api/movies${endpoint}`);
-                if (!response.ok) {
-                    throw new Error('Failed to fetch data');
-                }
+                if (!response.ok) throw new Error('Failed to fetch data');
                 const data = await response.json();
                 return data.results;
             } catch (error) {
-                console.error('Error fetching movies:', error);
+                console.error('Error:', error);
                 return [];
             }
         }
 
-        // Function to create movie cards
         function createMovieCard(movie) {
             return `
                 <div class="movie-card" data-movie-id="${movie.id}">
@@ -198,55 +273,45 @@
             `;
         }
 
-        // Function to set featured movie
-        function setFeaturedMovie(movie) {
-            const featured = document.getElementById('featured');
-            const featuredTitle = document.getElementById('featured-title');
-            const featuredOverview = document.getElementById('featured-overview');
+        function initializeScrollButtons() {
+            document.querySelectorAll('.movie-section').forEach(section => {
+                const row = section.querySelector('.movie-row');
+                const prev = section.querySelector('.prev');
+                const next = section.querySelector('.next');
+                const scrollAmount = Math.min(window.innerWidth * 0.8, 400);
 
-            featured.style.backgroundImage = `linear-gradient(to bottom, rgba(0,0,0,0.5), rgba(0,0,0,0.8)), url('${TMDB_IMAGE_BASE_URL}${movie.backdrop_path}')`;
-            featuredTitle.textContent = movie.title;
-            featuredOverview.textContent = movie.overview;
-        }
+                prev.addEventListener('click', () => {
+                    row.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+                });
 
-        // Populate movie scrollers
-        async function initializeMovies() {
-            const latestMovies = await fetchMovies('/now_playing');
-            const popularMovies = await fetchMovies('/popular');
-            const topRatedMovies = await fetchMovies('/top_rated');
-
-            if (latestMovies.length > 0) {
-                setFeaturedMovie(latestMovies[0]);
-            }
-
-            const latestMoviesContainer = document.getElementById('latest-movies');
-            const popularMoviesContainer = document.getElementById('popular-movies');
-            const topRatedMoviesContainer = document.getElementById('top-rated-movies');
-
-            latestMovies.forEach(movie => {
-                latestMoviesContainer.innerHTML += createMovieCard(movie);
-            });
-
-            popularMovies.forEach(movie => {
-                popularMoviesContainer.innerHTML += createMovieCard(movie);
-            });
-
-            topRatedMovies.forEach(movie => {
-                topRatedMoviesContainer.innerHTML += createMovieCard(movie);
-            });
-
-            // Add click event listeners to movie cards
-            document.querySelectorAll('.movie-card').forEach(card => {
-                card.addEventListener('click', () => {
-                    const movieId = card.dataset.movieId;
-                    window.location.href = `/movie/${movieId}`;
+                next.addEventListener('click', () => {
+                    row.scrollBy({ left: scrollAmount, behavior: 'smooth' });
                 });
             });
         }
 
-        // Initialize the page
+        async function initializeMovies() {
+            const sections = {
+                'latest-movies': await fetchMovies('/now_playing'),
+                'popular-movies': await fetchMovies('/popular'),
+                'top-rated-movies': await fetchMovies('/top_rated')
+            };
+
+            for (const [sectionId, movies] of Object.entries(sections)) {
+                const container = document.getElementById(sectionId);
+                container.innerHTML = movies.map(createMovieCard).join('');
+            }
+
+            document.querySelectorAll('.movie-card').forEach(card => {
+                card.addEventListener('click', () => {
+                    window.location.href = `/movie/${card.dataset.movieId}`;
+                });
+            });
+
+            initializeScrollButtons();
+        }
+
         initializeMovies();
     </script>
 </body>
 </html>
-
