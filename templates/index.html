@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Horizon Movies</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/static/css/css-scrollbar-light.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
@@ -24,6 +23,16 @@
             padding: 0;
             box-sizing: border-box;
             font-family: 'Inter', sans-serif;
+            user-select: none;
+        }
+
+        img {
+            pointer-events: none;
+            -webkit-user-drag: none;
+            user-select: none;
+            -moz-user-select: none;
+            -webkit-user-select: none;
+            -ms-user-select: none;
         }
 
         body {
@@ -31,6 +40,7 @@
             color: var(--text);
             min-height: 100vh;
             padding: 1rem;
+            overflow-x: hidden;
         }
 
         .container {
@@ -191,6 +201,7 @@
 
         .genre-section {
             margin-bottom: 2rem;
+            position: relative;
         }
 
         .genre-title {
@@ -201,37 +212,33 @@
         }
 
         .movies-row {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            display: flex;
             gap: 1rem;
             padding: 0.5rem;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+            position: relative;
+            cursor: grab;
         }
 
-        @media (min-width: 576px) {
-            .movies-row {
-                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-            }
+        .movies-row:active {
+            cursor: grabbing;
         }
 
-        @media (min-width: 768px) {
-            .movies-row {
-                grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-            }
-        }
-
-        @media (min-width: 992px) {
-            .movies-row {
-                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            }
+        .movies-row::-webkit-scrollbar {
+            display: none;
         }
 
         .movie-card {
+            flex: 0 0 auto;
+            width: 200px;
             background: var(--card-bg);
             border-radius: 1rem;
             overflow: hidden;
             transition: transform 0.3s ease;
             cursor: pointer;
-            height: 100%;
         }
 
         .movie-card:hover {
@@ -263,22 +270,6 @@
             font-size: 0.9rem;
         }
 
-        #selectedGenreSection {
-            display: none;
-        }
-
-        .scroll-indicator {
-            display: none;
-        }
-
-        @media (max-width: 768px) {
-            .scroll-indicator {
-                display: block;
-                text-align: right;
-                padding: 0.5rem;
-                color: var(--text-secondary);
-            }
-        }
     </style>
 </head>
 <body>
@@ -305,8 +296,6 @@
             <h2 class="genre-title">Selected Genre</h2>
             <div class="movies-row" id="selectedGenreMovies"></div>
         </div>
-
-        <p class="scroll-indicator">scroll →</p>
         
         <div id="genreSections"></div>
     </div>
@@ -316,6 +305,57 @@
         const API_KEY = '789c2869ddf724127863ae4e4780f6b6';
         const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
         const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
+
+        function initDragToScroll(element) {
+            let isDown = false;
+            let startX;
+            let scrollLeft;
+
+            element.addEventListener('mousedown', (e) => {
+                isDown = true;
+                element.style.scrollBehavior = 'auto';
+                startX = e.pageX - element.offsetLeft;
+                scrollLeft = element.scrollLeft;
+            });
+
+            element.addEventListener('mouseleave', () => {
+                isDown = false;
+                element.style.scrollBehavior = 'smooth';
+            });
+
+            element.addEventListener('mouseup', () => {
+                isDown = false;
+                element.style.scrollBehavior = 'smooth';
+            });
+
+            element.addEventListener('mousemove', (e) => {
+                if (!isDown) return;
+                e.preventDefault();
+                const x = e.pageX - element.offsetLeft;
+                const walk = (x - startX) * 2;
+                element.scrollLeft = scrollLeft - walk;
+            });
+        }
+
+        function scrollSection(section, direction) {
+            const moviesRow = section.querySelector('.movies-row');
+            moviesRow.scrollBy({
+                left: direction,
+                behavior: 'smooth'
+            });
+        }
+
+        function updateScrollButtons(section) {
+            const moviesRow = section.querySelector('.movies-row');
+            
+            if (leftButton && rightButton) {
+                const scrollLeft = moviesRow.scrollLeft;
+                const maxScroll = moviesRow.scrollWidth - moviesRow.clientWidth;
+                
+                leftButton.style.opacity = scrollLeft <= 0 ? '0' : '1';
+                rightButton.style.opacity = scrollLeft >= maxScroll ? '0' : '1';
+            }
+        }
 
         async function fetchGenres() {
             const response = await fetch('/api/genres');
@@ -394,6 +434,9 @@
                     selectedGenreSection.style.display = 'block';
                     selectedGenreSection.querySelector('.genre-title').textContent = 
                         genreSelect.options[genreSelect.selectedIndex].text;
+                    
+                    initDragToScroll(selectedGenreMovies);
+                    updateScrollButtons(selectedGenreSection);
                 } else {
                     selectedGenreSection.style.display = 'none';
                 }
@@ -413,6 +456,10 @@
                 moviesRow.innerHTML = movies
                     .map(movie => createMovieCard(movie))
                     .join('');
+                
+                initDragToScroll(moviesRow);
+                moviesRow.addEventListener('scroll', () => updateScrollButtons(section));
+                updateScrollButtons(section);
             }
         }
 
@@ -452,9 +499,6 @@
             }
         });
 
-        initializeGenreSections();
-
-        // Add lazy loading for images
         if ('IntersectionObserver' in window) {
             const imageObserver = new IntersectionObserver((entries, observer) => {
                 entries.forEach(entry => {
@@ -472,6 +516,8 @@
                 });
             });
         }
+
+        initializeGenreSections();
     </script>
 </body>
 </html>
