@@ -333,6 +333,9 @@
             .movie-header {
                 flex-direction: column;
             }
+            .movie-title{
+                font-size: 1.5em;
+            }
 
             .movie-poster {
                 width: 100%;
@@ -343,21 +346,26 @@
             .cast-grid {
                 grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
             }
+
+            .main-content{
+                margin: 0;
+                width: 100%;
+            }
         }
     </style>
 </head>
 <body>
     <header class="header">
        <div class="header-content">
-           <a href="/">
-               <img src="https://i.postimg.cc/pdsM4wht/horizon-logo-dark.png" alt="Horizon Movies" class="logo">
-           </a>
            <form class="search-bar" action="/search" method="GET">
                <input type="search" name="query" placeholder="Search movies..." aria-label="Search">
                <button type="submit" class="search-btn">Search</button>
            </form>
        </div>
    </header>
+   <div class="embed-container">
+       <iframe src="{{ vidbinge_embed_url }}" allowfullscreen sandbox="allow-same-origin allow-forms allow-scripts allow-storage-access-by-user-activation allow-presentation"></iframe>
+   </div>
     <main class="container main-content">
         <div class="movie-header">
             <img src="https://image.tmdb.org/t/p/w500{{ movie.poster_path }}" alt="{{ movie.title }}" class="movie-poster">
@@ -380,9 +388,6 @@
             </div>
         </div>
 
-        <div class="embed-container">
-            <iframe src="{{ vidbinge_embed_url }}" allowfullscreen sandbox="allow-same-origin allow-forms allow-scripts allow-storage-access-by-user-activation allow-presentation"></iframe>
-        </div>
 
         <section class="cast-section">
             <h2 class="section-title">Cast</h2>
