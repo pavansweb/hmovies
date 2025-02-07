@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Horizon Movies</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="     ">
+    <link href="/static/css/css-scrollbar-light.css" rel="stylesheet">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
@@ -81,29 +82,104 @@
             }
         }
 
-        .genre-select {
+        .genre-dropdown {
+            position: relative;
+            width: 100%;
+            max-width: 300px;
+            font-size: 1rem;
+            color: var(--text);
+        }
+
+        .genre-dropdown-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             padding: 1rem 1.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 9999px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .genre-dropdown-header:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .dropdown-icon {
+            transition: transform 0.3s ease;
+        }
+
+        .genre-dropdown.active .dropdown-icon {
+            transform: rotate(180deg);
+        }
+
+        .genre-dropdown-content {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: var(--card-bg);
+            border-radius: 1rem;
+            margin-top: 0.5rem;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        .genre-dropdown.active .genre-dropdown-content {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .genre-search-container {
+            position: relative;
+            padding: 1rem;
+        }
+
+        #genreSearch {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 2.5rem;
             background: rgba(255, 255, 255, 0.1);
             border: none;
             border-radius: 9999px;
             color: var(--text);
-            font-size: 1rem;
+            font-size: 0.9rem;
             outline: none;
-            width: 100%;
-            max-width: none;
+        }
+
+        .genre-search-container .search-icon {
+            position: absolute;
+            left: 2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 16px;
+            height: 16px;
+            color: var(--text-secondary);
+        }
+
+        #genreList {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        #genreList li {
+            padding: 0.75rem 1.5rem;
             cursor: pointer;
+            transition: background-color 0.2s ease;
         }
 
-        @media (min-width: 768px) {
-            .genre-select {
-                max-width: 200px;
-            }
+        #genreList li:hover {
+            background-color: rgba(255, 255, 255, 0.1);
         }
 
-        .genre-select option {
-            background: var(--card-bg);
-            color: var(--text);
+        #genreList li.active {
+            background-color: var(--primary);
+            color: white;
         }
+
 
         .search-container {
             position: relative;
@@ -280,9 +356,19 @@
         </header>
 
         <div class="controls-container">
-            <select class="genre-select" id="genreSelect">
-                <option value="">Select Genre</option>
-            </select>
+            <div class="genre-dropdown" id="genreDropdown">
+                <div class="genre-dropdown-header">
+                    <span id="selectedGenre">Select Genre</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="dropdown-icon"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                </div>
+                <div class="genre-dropdown-content">
+                    <div class="genre-search-container">
+                        <input type="text" id="genreSearch" placeholder="Search genres...">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="search-icon"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    </div>
+                    <ul id="genreList"></ul>
+                </div>
+            </div>
             <div class="search-container">
                 <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -292,10 +378,7 @@
             </div>
         </div>
 
-        <div id="selectedGenreSection" class="genre-section">
-            <h2 class="genre-title">Selected Genre</h2>
-            <div class="movies-row" id="selectedGenreMovies"></div>
-        </div>
+    
         
         <div id="genreSections"></div>
     </div>
@@ -343,18 +426,6 @@
                 left: direction,
                 behavior: 'smooth'
             });
-        }
-
-        function updateScrollButtons(section) {
-            const moviesRow = section.querySelector('.movies-row');
-            
-            if (leftButton && rightButton) {
-                const scrollLeft = moviesRow.scrollLeft;
-                const maxScroll = moviesRow.scrollWidth - moviesRow.clientWidth;
-                
-                leftButton.style.opacity = scrollLeft <= 0 ? '0' : '1';
-                rightButton.style.opacity = scrollLeft >= maxScroll ? '0' : '1';
-            }
         }
 
         async function fetchGenres() {
@@ -409,42 +480,49 @@
             `;
         }
 
+        function initializeGenreDropdown() {
+            const genreDropdown = document.getElementById('genreDropdown');
+            const genreHeader = genreDropdown.querySelector('.genre-dropdown-header');
+            const selectedGenreSpan = document.getElementById('selectedGenre');
+            const genreList = document.getElementById('genreList');
+            const genreSearch = document.getElementById('genreSearch');
+
+            genreHeader.addEventListener('click', () => {
+                genreDropdown.classList.toggle('active');
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!genreDropdown.contains(e.target)) {
+                    genreDropdown.classList.remove('active');
+                }
+            });
+
+            genreSearch.addEventListener('input', (e) => {
+                const searchTerm = e.target.value.toLowerCase();
+                Array.from(genreList.children).forEach(li => {
+                    const genreName = li.textContent.toLowerCase();
+                    li.style.display = genreName.includes(searchTerm) ? '' : 'none';
+                });
+            });
+        }
+
         async function initializeGenreSections() {
             const genres = await fetchGenres();
-            const genreSelect = document.getElementById('genreSelect');
+            const genreList = document.getElementById('genreList');
             const genreSections = document.getElementById('genreSections');
             
             genres.forEach(genre => {
-                const option = document.createElement('option');
-                option.value = genre.id;
-                option.textContent = genre.name;
-                genreSelect.appendChild(option);
+                const li = document.createElement('li');
+                li.textContent = genre.name;
+                li.dataset.genreId = genre.id;
+                li.addEventListener('click', handleGenreSelection);
+                genreList.appendChild(li);
             });
 
-            genreSelect.addEventListener('change', async () => {
-                const selectedGenreId = genreSelect.value;
-                const selectedGenreSection = document.getElementById('selectedGenreSection');
-                const selectedGenreMovies = document.getElementById('selectedGenreMovies');
-                
-                if (selectedGenreId) {
-                    const movies = await fetchMoviesByGenre(selectedGenreId);
-                    selectedGenreMovies.innerHTML = movies
-                        .map(movie => createMovieCard(movie))
-                        .join('');
-                    selectedGenreSection.style.display = 'block';
-                    selectedGenreSection.querySelector('.genre-title').textContent = 
-                        genreSelect.options[genreSelect.selectedIndex].text;
-                    
-                    initDragToScroll(selectedGenreMovies);
-                    updateScrollButtons(selectedGenreSection);
-                } else {
-                    selectedGenreSection.style.display = 'none';
-                }
-            });
-            
             for (const genre of genres) {
                 const section = document.createElement('div');
                 section.className = 'genre-section';
+                section.dataset.genreId = genre.id;
                 section.innerHTML = `
                     <h2 class="genre-title">${genre.name}</h2>
                     <div class="movies-row" id="genre-${genre.id}"></div>
@@ -458,8 +536,34 @@
                     .join('');
                 
                 initDragToScroll(moviesRow);
-                moviesRow.addEventListener('scroll', () => updateScrollButtons(section));
-                updateScrollButtons(section);
+            }
+
+            initializeGenreDropdown();
+        }
+
+        function handleGenreSelection(event) {
+            const selectedGenreId = event.target.dataset.genreId;
+            const selectedGenreName = event.target.textContent;
+            const genreSections = document.getElementById('genreSections');
+            const selectedGenreSpan = document.getElementById('selectedGenre');
+            const genreDropdown = document.getElementById('genreDropdown');
+            
+            // Update active state in the dropdown
+            document.querySelectorAll('#genreList li').forEach(li => li.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Update selected genre text
+            selectedGenreSpan.textContent = selectedGenreName;
+
+            // Close dropdown
+            genreDropdown.classList.remove('active');
+            
+            if (selectedGenreId) {
+                const selectedSection = genreSections.querySelector(`[data-genre-id="${selectedGenreId}"]`);
+                if (selectedSection) {
+                    selectedSection.remove();
+                    genreSections.insertAdjacentElement('afterbegin', selectedSection);
+                }
             }
         }
 
@@ -521,3 +625,4 @@
     </script>
 </body>
 </html>
+
