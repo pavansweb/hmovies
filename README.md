@@ -1,6 +1,6 @@
 # Horizon Movies Main Frame
 
-Welcome to **Horizon Movies Main Frame**! This project is a comprehensive web-based application that allows users to browse, search, and view detailed information about movies. It is built with CSS, HTML, JavaScript, and Python.
+Welcome to **Horizon Movies Main Frame**! This project is a comprehensive web-based application that allows users to browse, search, and play any movie. It is built with CSS, HTML, JavaScript, and Python.
 
 ## Table of Contents
 
@@ -14,14 +14,15 @@ Welcome to **Horizon Movies Main Frame**! This project is a comprehensive web-ba
 
 ## Description
 
-Horizon Movies Main Frame is a full-featured web application designed for movie enthusiasts. The application provides a user-friendly interface for browsing and searching for movies, and it displays detailed information about each movie.
+Horizon Movies Main Frame is a full-featured web application designed for movie enthusiasts. The application provides a user-friendly interface for browsing and searching for movies, watching, and it displays detailed information about each movie.
 
 ## Features
 
 - Browse movies
 - Search for movies by title
+- Play the movies using multiple servers
 - View detailed information about each movie
-- User authentication and profiles
+- User authentication and profiles ( pending )
 - Responsive design for mobile and desktop
 
 ## Technologies Used
