@@ -9,6 +9,16 @@ CORS(app)
 TMDB_API_KEY = '789c2869ddf724127863ae4e4780f6b6'  # Replace with your TMDB API key
 TMDB_BASE_URL = "https://api.themoviedb.org/3"
 
+@app.route('/message/<path:text>')  # Dynamic route for /messages/
+def messages(text):
+    return render_template('message.html', message=text)
+
+@app.route('/imp')  # Query parameter-based route
+def important():
+    message = request.args.get('message', 'No message provided')
+    return render_template('message.html', message=message)
+
+
 @app.route('/api/movies/<endpoint>', methods=['GET'])
 def fetch_movies(endpoint):
     """Fetches movies from TMDB (e.g., popular, trending, upcoming)"""
@@ -25,20 +35,35 @@ def fetch_movies(endpoint):
 
 @app.route('/api/search', methods=['GET'])
 def search_movies():
-    query = request.args.get('query', '')
+    query = request.args.get('query', '').strip()
     if not query:
         return jsonify({"error": "Query parameter is required"}), 400
 
     url = f"https://api.themoviedb.org/3/search/movie?api_key={TMDB_API_KEY}&query={query}"
-    
+
     try:
         response = requests.get(url)
         response.raise_for_status()
         data = response.json()
-        return jsonify(data)
+
+        # Validate response structure
+        if "results" not in data:
+            return jsonify({"error": "Invalid API response"}), 500
+
+        # Filter out irrelevant results
+        filtered_results = [
+            movie for movie in data["results"]
+            if movie.get("vote_count", 0) >= 100  # Minimum votes threshold
+        ]
+
+        if not filtered_results:
+            return jsonify({"message": "No relevant results found"}), 404
+
+        return jsonify({"results": filtered_results})
+
     except requests.exceptions.RequestException as e:
         return jsonify({"error": str(e)}), 500
-
+    
 @app.route('/search', methods=['GET', 'POST'])
 def search():
     query = request.args.get('q', '')
