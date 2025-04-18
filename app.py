@@ -104,7 +104,7 @@ def movie(movie_id):
 
     except Exception as e:
       print(f"Error fetching movie details: {e}")
-      return render_template('error.html', message=str(e))
+      return render_template('message.html', message=str(e))
 
 
 def get_movie_details(movie_id):
