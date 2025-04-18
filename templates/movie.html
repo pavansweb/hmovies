@@ -4,40 +4,33 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ movie.title }} | Horizon Movies</title>
-    <link href="/static/css/css-scrollbar-light.css" rel="stylesheet">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     <link rel="icon" href="/static/favicons/icons-cropped-cflix-32x32.png" sizes="32x32">
     <link rel="icon" href="/static/favicon.ico">
     <style>
         :root {
-            --primary-bg: #000000;
-            --secondary-bg: #111111;
-            --tertiary-bg: #1c1c1c;
-            --accent-color: #ff4d4d;
+            --primary-bg: #0f0f15;
+            --secondary-bg: #1a1a25;
+            --tertiary-bg: #252533;
+            --accent-color: #ff3a5e;
             --text-color: #ffffff;
             --text-secondary: #cccccc;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        html{
-            width: 100vw;
-            overflow-x: hidden;
+            --gradient-primary: linear-gradient(45deg, #ff3a5e, #ff6b6b);
         }
 
         body {
-            font-family: 'Arial', sans-serif;
+            font-family: 'Inter', 'Segoe UI', sans-serif;
             background-color: var(--primary-bg);
             color: var(--text-color);
             line-height: 1.6;
-            width: 100vw;
         }
 
         .header {
-            background: rgba(10, 10, 20, 0.8);
-            backdrop-filter: blur(20px);
+            background: rgba(10, 10, 20, 0.95);
+            backdrop-filter: blur(10px);
             position: sticky;
             top: 0;
             z-index: 1000;
@@ -45,254 +38,247 @@
             padding: 15px 0;
         }
 
-        .header-content {
-            display: flex;
-            align-items: center;
-            justify-content: space-around;
-            gap: 30px;
-            width: 90%;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
         .logo {
             height: 40px;
             width: auto;
         }
 
-        .search-bar {
-            display: flex;
-            gap: 1rem;
-            flex: 1;
+        .search-form {
             max-width: 600px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 50px;
-            padding: 0.5rem 1rem;
-            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .search-bar input {
-            flex: 1;
-            background: transparent;
-            border: none;
-            color: white;
-            padding: 0.5rem;
+        .search-input {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: var(--text-color);
+            border-radius: 50px 0 0 50px;
         }
 
-        .search-bar input:focus {
-            outline: none;
+        .search-input:focus {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--accent-color);
+            box-shadow: none;
+            color: var(--text-color);
         }
 
-        .search-bar input::placeholder {
+        .search-input::placeholder {
             color: rgba(255, 255, 255, 0.5);
         }
 
         .search-btn {
-            background: linear-gradient(45deg, #FF3366, #FF6B6B);
+            background: var(--gradient-primary);
             border: none;
-            border-radius: 25px;
-            padding: 0.5rem 1.5rem;
-            color: white;
-            font-weight: 500;
+            border-radius: 0 50px 50px 0;
+            padding-left: 1.5rem;
+            padding-right: 1.5rem;
             transition: all 0.3s ease;
         }
 
         .search-btn:hover {
+            opacity: 0.9;
             transform: translateY(-2px);
-            box-shadow: 0 4px 20px rgba(255, 51, 102, 0.4);
+            box-shadow: 0 4px 12px rgba(255, 58, 94, 0.3);
         }
 
-        .container {
-            width: 90%;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        .main-content {
+        .video-container {
+            position: relative;
             margin-top: 20px;
-        }
-
-        .movie-header {
-            display: flex;
-            gap: 30px;
             margin-bottom: 30px;
             background-color: var(--secondary-bg);
-            padding: 30px;
-            border-radius: 10px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
         }
 
-        .movie-poster {
-            width: 300px;
-            height: 450px;
-            object-fit: cover;
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(255, 77, 77, 0.3);
-        }
-
-        .movie-info {
-            flex: 1;
-        }
-
-        .movie-title {
-            font-size: 2.5em;
-            color: var(--accent-color);
-            margin-bottom: 10px;
-        }
-
-        .movie-meta {
-            display: flex;
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-
-        .meta-item {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .movie-overview {
-            margin-bottom: 20px;
-        }
-
-        .btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: all 0.3s ease;
-        }
-
-        .btn-primary {
-            background-color: var(--accent-color);
-            color: var(--text-color);
-        }
-
-        .btn-primary:hover {
-            background-color: #ff6666;
-            transform: translateY(-2px);
-        }
-
-        .embed-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .video-wrapper {
             position: relative;
-            padding-bottom: 56.25%;
+            padding-top: 56.25%; /* 16:9 Aspect Ratio */
             height: 0;
             overflow: hidden;
-            border-radius: 10px;
-            margin-bottom: 30px;
         }
 
-        .embed-container iframe {
+        .video-wrapper iframe {
             position: absolute;
-            margin-left: auto;
-            margin-right: auto;
             top: 0;
-            width: 90%;
+            left: 0;
+            width: 100%;
             height: 100%;
             border: none;
         }
 
-        .cast-section {
-            margin-bottom: 30px;
-            background-color: var(--tertiary-bg);
-            padding: 30px;
-            border-radius: 10px;
+        .movie-card {
+            background-color: var(--secondary-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
-        .section-title {
-            font-size: 1.8em;
-            margin-bottom: 20px;
+        .movie-poster-container {
+            overflow: hidden;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .movie-poster {
+            width: 100%;
+            height: auto;
+            transition: transform 0.5s ease;
+            border-radius: 8px;
+        }
+
+        .movie-poster:hover {
+            transform: scale(1.03);
+        }
+
+        .movie-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .meta-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-right: 1.5rem;
+            color: var(--text-secondary);
+        }
+
+        .meta-item i {
             color: var(--accent-color);
         }
 
-        .cast-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            gap: 20px;
+        .movie-overview {
+            line-height: 1.7;
+            font-size: 1.1rem;
+        }
+
+        .btn-accent {
+            background: var(--gradient-primary);
+            border: none;
+            padding: 0.7rem 1.5rem;
+            border-radius: 50px;
+            color: white;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(255, 58, 94, 0.3);
+        }
+
+        .btn-accent:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 15px rgba(255, 58, 94, 0.4);
+            color: white;
+        }
+
+        .btn-outline {
+            border: 2px solid var(--accent-color);
+            color: var(--accent-color);
+            background: transparent;
+            padding: 0.7rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-outline:hover {
+            background: var(--accent-color);
+            color: white;
+            transform: translateY(-3px);
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            display: inline-block;
+            font-weight: 700;
+            color: var(--text-color);
+        }
+
+        .section-title::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: -8px;
+            width: 60px;
+            height: 4px;
+            background: var(--gradient-primary);
+            border-radius: 2px;
+        }
+
+        .cast-section {
+            padding: 2.5rem;
+            border-radius: 12px;
+            background-color: var(--tertiary-bg);
+            margin-bottom: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
 
         .cast-card {
             background-color: var(--secondary-bg);
             border-radius: 10px;
             overflow: hidden;
-            transition: transform 0.3s ease;
+            transition: all 0.3s ease;
+            height: 100%;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
         .cast-card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-7px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
         }
 
         .cast-img {
             width: 100%;
-            height: 200px;
+            aspect-ratio: 2/3;
             object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .cast-card:hover .cast-img {
+            transform: scale(1.05);
         }
 
         .cast-info {
-            padding: 10px;
+            padding: 1rem;
         }
 
         .cast-name {
-            font-weight: bold;
-            margin-bottom: 5px;
+            font-weight: 700;
+            margin-bottom: 0.3rem;
+            font-size: 1rem;
         }
 
         .cast-character {
-            font-size: 0.9em;
+            font-size: 0.9rem;
             color: var(--text-secondary);
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1001;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.8);
         }
 
         .modal-content {
             background-color: var(--secondary-bg);
-            margin: 15% auto;
-            padding: 20px;
-            border-radius: 10px;
-            width: 80%;
-            max-width: 500px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .close {
-            color: var(--text-secondary);
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
+        .modal-header {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .close:hover {
-            color: var(--accent-color);
-        }
-
-        .share-buttons {
-            display: flex;
-            justify-content: space-around;
-            margin-top: 20px;
+        .modal-footer {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .share-button {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: background-color 0.3s ease;
-            color: var(--text-color);
+            border-radius: 50px;
+            padding: 0.5rem 1.2rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
         }
 
         .share-button.facebook { background-color: #3b5998; }
@@ -300,120 +286,141 @@
         .share-button.whatsapp { background-color: #25d366; }
 
         .share-button:hover {
-            opacity: 0.9;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
         }
 
         .copy-link {
             display: flex;
-            margin-top: 20px;
+            margin-top: 1.5rem;
         }
 
         .copy-link input {
             flex-grow: 1;
-            padding: 10px;
-            border: none;
-            border-radius: 5px 0 0 5px;
             background-color: var(--tertiary-bg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             color: var(--text-color);
+            border-radius: 50px 0 0 50px;
+            padding-left: 1rem;
+        }
+
+        .copy-link input:focus {
+            outline: none;
+            border-color: var(--accent-color);
         }
 
         .copy-link button {
-            padding: 10px 20px;
+            background: var(--gradient-primary);
             border: none;
-            border-radius: 0 5px 5px 0;
-            background-color: var(--accent-color);
-            color: var(--text-color);
-            cursor: pointer;
-            transition: background-color 0.3s ease;
+            border-radius: 0 50px 50px 0;
+            color: white;
+            font-weight: 600;
+            padding: 0.5rem 1.5rem;
         }
 
-        .copy-link button:hover {
-            background-color: #ff6666;
+        .footer {
+            background-color: var(--secondary-bg);
+            padding: 2rem 0;
+            margin-top: 3rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
         }
 
         @media (max-width: 768px) {
-            .header-content {
-                flex-direction: column;
-                gap: 15px;
+            .movie-title {
+                font-size: 1.8rem;
             }
-
-            .search-bar {
+            
+            .section-title {
+                font-size: 1.5rem;
+            }
+            
+            .movie-poster-container {
+                margin-bottom: 1.5rem;
+            }
+            
+            .btn {
                 width: 100%;
-            }
-            .movie-header {
-                flex-direction: column;
-            }
-            .movie-title{
-                font-size: 1.5em;
-            }
-
-            .movie-poster {
-                width: 100%;
-                height: auto;
-                max-height: 450px;
-            }
-
-            .cast-grid {
-                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-            }
-
-            .main-content{
-                margin: 0;
-                width: 100%;
+                margin-bottom: 0.5rem;
             }
         }
     </style>
 </head>
 <body>
+    <!-- Header -->
     <header class="header">
-       <div class="header-content">
-           <form class="search-bar" action="/search" method="GET">
-               <input type="search" name="query" placeholder="Search movies..." aria-label="Search">
-               <button type="submit" class="search-btn">Search</button>
-           </form>
-       </div>
-   </header>
-   <div class="embed-container">
-       <iframe src="{{ vidbinge_embed_url }}" allowfullscreen sandbox="allow-same-origin allow-forms allow-scripts allow-storage-access-by-user-activation allow-presentation"></iframe>
-   </div>
-    <main class="container main-content">
-        <div class="movie-header">
-            <img src="https://image.tmdb.org/t/p/w500{{ movie.poster_path }}" alt="{{ movie.title }}" class="movie-poster">
-            <div class="movie-info">
-                <h1 class="movie-title">{{ movie.title }}</h1>
-                <div class="movie-meta">
-                    <span class="meta-item"><i class="fas fa-calendar"></i> {{ movie.release_date }}</span>
-                    <span class="meta-item"><i class="fas fa-star"></i> {{ movie.vote_average }}/10</span>
-                    <span class="meta-item"><i class="fas fa-clock"></i> {{ movie.runtime }} min</span>
+        <div class="container">
+            <div class="d-flex justify-content-center">
+                <form class="search-form d-flex w-100" action="/search" method="GET">
+                    <input class="form-control search-input" type="search" name="query" placeholder="Search movies..." aria-label="Search">
+                    <button class="btn search-btn" type="submit">Search</button>
+                </form>
+            </div>
+        </div>
+    </header>
+
+    <!-- Video Player -->
+    <div class="container">
+        <div class="video-container">
+            <div class="video-wrapper">
+                <iframe
+            src="https://vidfast.pro/movie/{{ movie_id }}?autoPlay=true&theme=ff4561"
+            allowfullscreen
+            sandbox="allow-scripts allow-same-origin allow-presentation allow-popups-to-escape-sandbox"
+            style="border: none; width: 100%; height: 100%;">
+            </iframe>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="container">
+        <!-- Movie Information -->
+        <div class="movie-card p-4 mb-4">
+            <div class="row">
+                <div class="col-md-4 mb-3 mb-md-0">
+                    <div class="movie-poster-container">
+                        <img src="https://image.tmdb.org/t/p/w500{{ movie.poster_path }}" alt="{{ movie.title }}" class="movie-poster img-fluid">
+                    </div>
                 </div>
-                <p class="movie-overview">{{ movie.overview }}</p>
-                <div class="movie-actions">
-                    <button class="btn btn-primary" id="watchlistBtn">
-                        <i class="fas fa-plus"></i> Add to Watchlist
-                    </button>
-                    <button class="btn btn-primary" id="shareBtn">
-                        <i class="fas fa-share"></i> Share
-                    </button>
+                <div class="col-md-8">
+                    <h1 class="movie-title">{{ movie.title }}</h1>
+                    <div class="movie-meta mb-3">
+                        <span class="meta-item"><i class="bi bi-calendar-event"></i> {{ movie.release_date }}</span>
+                        <span class="meta-item"><i class="bi bi-star-fill"></i> {{ movie.vote_average }}/10</span>
+                        <span class="meta-item"><i class="bi bi-clock"></i> {{ movie.runtime }} min</span>
+                    </div>
+                    <p class="movie-overview mb-4">{{ movie.overview }}</p>
+                    <div class="d-flex flex-wrap gap-2">
+                        <button class="btn btn-accent me-2" id="watchlistBtn">
+                            <i class="bi bi-plus-circle"></i> Add to Watchlist
+                        </button>
+                        <button class="btn btn-outline" id="shareBtn">
+                            <i class="bi bi-share"></i> Share
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
 
-
+        <!-- Cast Section -->
         <section class="cast-section">
             <h2 class="section-title">Cast</h2>
-            <div class="cast-grid">
+            <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-6 g-3">
                 {% for actor in movie.credits.cast[:12] %}
-                <div class="cast-card">
-                    {% if actor.profile_path %}
-                    <img src="https://image.tmdb.org/t/p/w500{{ actor.profile_path }}" class="cast-img" alt="{{ actor.name }}">
-                    {% else %}
-                    <div class="cast-img" style="background-color: #333; display: flex; align-items: center; justify-content: center;">
-                        <i class="fas fa-user fa-3x" style="color: #666;"></i>
-                    </div>
-                    {% endif %}
-                    <div class="cast-info">
-                        <div class="cast-name">{{ actor.name }}</div>
-                        <div class="cast-character">{{ actor.character }}</div>
+                <div class="col">
+                    <div class="cast-card h-100">
+                        {% if actor.profile_path %}
+                        <img src="https://image.tmdb.org/t/p/w500{{ actor.profile_path }}" class="cast-img" alt="{{ actor.name }}">
+                        {% else %}
+                        <div class="cast-img d-flex align-items-center justify-content-center bg-dark">
+                            <i class="bi bi-person-fill" style="font-size: 3rem; color: #666;"></i>
+                        </div>
+                        {% endif %}
+                        <div class="cast-info">
+                            <div class="cast-name">{{ actor.name }}</div>
+                            <div class="cast-character">{{ actor.character }}</div>
+                        </div>
                     </div>
                 </div>
                 {% endfor %}
@@ -421,66 +428,88 @@
         </section>
     </main>
 
-    <div id="shareModal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2>Share Movie</h2>
-            <div class="share-buttons">
-                <button class="share-button facebook">Facebook</button>
-                <button class="share-button twitter">Twitter</button>
-                <button class="share-button whatsapp">WhatsApp</button>
-            </div>
-            <div class="copy-link">
-                <input type="text" id="linkInput" readonly>
-                <button id="copyLinkBtn">Copy</button>
+    <!-- Footer -->
+    <footer class="footer text-center">
+        <div class="container">
+            <p class="mb-0">© 2025 Horizon Movies. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Share Modal -->
+    <div class="modal fade" id="shareModal" tabindex="-1" aria-labelledby="shareModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="shareModalLabel">Share Movie</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="d-flex justify-content-around mb-3">
+                        <button class="btn share-button facebook">
+                            <i class="bi bi-facebook me-2"></i>Facebook
+                        </button>
+                        <button class="btn share-button twitter">
+                            <i class="bi bi-twitter me-2"></i>Twitter
+                        </button>
+                        <button class="btn share-button whatsapp">
+                            <i class="bi bi-whatsapp me-2"></i>WhatsApp
+                        </button>
+                    </div>
+                    <div class="copy-link input-group mt-3">
+                        <input type="text" id="linkInput" class="form-control" readonly>
+                        <button class="btn" id="copyLinkBtn">Copy</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
-    <script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script> 
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script disable-devtool-auto src='https://cdn.jsdelivr.net/npm/disable-devtool@latest' url='/imp?message=Do not peak into Dev Tools, you cant even if you want to'></script>
 
     <script>
         const watchlistBtn = document.getElementById('watchlistBtn');
         const shareBtn = document.getElementById('shareBtn');
-        const shareModal = document.getElementById('shareModal');
-        const closeBtn = document.getElementsByClassName('close')[0];
+        const shareModal = new bootstrap.Modal(document.getElementById('shareModal'));
         const linkInput = document.getElementById('linkInput');
         const copyLinkBtn = document.getElementById('copyLinkBtn');
 
         watchlistBtn.addEventListener('click', function() {
-            this.innerHTML = this.innerHTML.includes('Add to') ? 
-                '<i class="fas fa-check"></i> Added to Watchlist' : 
-                '<i class="fas fa-plus"></i> Add to Watchlist';
+            if (this.textContent.includes('Add to')) {
+                this.innerHTML = '<i class="bi bi-check-circle"></i> Added to Watchlist';
+                this.classList.add('btn-success');
+                this.classList.remove('btn-accent');
+            } else {
+                this.innerHTML = '<i class="bi bi-plus-circle"></i> Add to Watchlist';
+                this.classList.add('btn-accent');
+                this.classList.remove('btn-success');
+            }
         });
 
-        shareBtn.onclick = function() {
-            shareModal.style.display = "block";
+        shareBtn.addEventListener('click', function() {
             linkInput.value = window.location.href;
-        }
+            shareModal.show();
+        });
 
-        closeBtn.onclick = function() {
-            shareModal.style.display = "none";
-        }
-
-        window.onclick = function(event) {
-            if (event.target == shareModal) {
-                shareModal.style.display = "none";
-            }
-        }
-
-        copyLinkBtn.onclick = function() {
+        copyLinkBtn.addEventListener('click', function() {
             linkInput.select();
             document.execCommand("copy");
-            alert("Link copied to clipboard!");
-        }
+            
+            // Change button text temporarily
+            const originalText = this.textContent;
+            this.textContent = "Copied!";
+            setTimeout(() => {
+                this.textContent = originalText;
+            }, 2000);
+        });
 
         // Implement share functionality for each button
         document.querySelectorAll('.share-button').forEach(button => {
             button.addEventListener('click', function() {
-                const platform = this.classList[1];
+                const platform = this.classList[2];
                 const url = encodeURIComponent(window.location.href);
-                const text = encodeURIComponent(f`Check out this movie!`);
+                const text = encodeURIComponent(`Check out this movie!`);
                 let shareUrl;
 
                 switch(platform) {
@@ -501,4 +530,3 @@
     </script>
 </body>
 </html>
-

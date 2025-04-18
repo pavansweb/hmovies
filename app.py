@@ -100,7 +100,7 @@ def movie(movie_id):
         vidbinge_embed_url = f"https://vidbinge.dev/embed/movie/{tmdb_data.get('id', movie_id)}" #use the  movie.id  passed if movie id doesnt exist for now as a reasonable alternative or handle case if no id given
 
 
-        return render_template('movie.html', movie=tmdb_data, vidbinge_embed_url=vidbinge_embed_url) #pass in to render to the movie.html embed
+        return render_template('movie.html', movie=tmdb_data, movie_id=movie_id) 
 
     except Exception as e:
       print(f"Error fetching movie details: {e}")
