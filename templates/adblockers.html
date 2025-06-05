@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recommended Ad Blockers - Better Streaming Experience</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .site-header {
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(15px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            padding: 15px 0;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo {
+            height: 45px;
+            width: auto;
+            border-radius: 8px;
+        }
+
+        .site-title {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #4fc3f7;
+            text-shadow: 0 0 15px rgba(79, 195, 247, 0.4);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-link {
+            color: #e0e0e0;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .nav-link:hover {
+            background: rgba(79, 195, 247, 0.2);
+            color: #4fc3f7;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(79, 195, 247, 0.3);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #e0e0e0;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 40px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            color: #4fc3f7;
+            margin-bottom: 15px;
+            text-shadow: 0 0 20px rgba(79, 195, 247, 0.3);
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            color: #b0bec5;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .warning-box {
+            background: linear-gradient(135deg, #ff6b35, #f7931e);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(255, 107, 53, 0.2);
+        }
+
+        .warning-box h3 {
+            color: white;
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+        }
+
+        .warning-box p {
+            color: white;
+            opacity: 0.9;
+        }
+
+        .adblocker-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .adblocker-card {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 15px;
+            padding: 25px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .adblocker-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(79, 195, 247, 0.1), rgba(156, 39, 176, 0.1));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .adblocker-card:hover::before {
+            opacity: 1;
+        }
+
+        .adblocker-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .adblocker-card h3 {
+            color: #4fc3f7;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .adblocker-card p {
+            margin-bottom: 20px;
+            color: #b0bec5;
+            position: relative;
+            z-index: 1;
+        }
+
+        .recommended-badge {
+            background: linear-gradient(45deg, #4caf50, #66bb6a);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .browser-links {
+            position: relative;
+            z-index: 1;
+        }
+
+        .browser-links h4 {
+            color: #81c784;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .browser-link {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            padding: 8px 16px;
+            background: linear-gradient(45deg, #2196f3, #21cbf3);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .browser-link:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(33, 150, 243, 0.4);
+        }
+
+        .instructions {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .instructions h3 {
+            color: #4fc3f7;
+            margin-bottom: 20px;
+            font-size: 1.4rem;
+        }
+
+        .step {
+            margin-bottom: 15px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+            border-left: 4px solid #4fc3f7;
+        }
+
+        .step strong {
+            color: #81c784;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: #78909c;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+
+            .nav-links {
+                justify-content: center;
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+
+            .nav-link {
+                padding: 8px 16px;
+                font-size: 0.9rem;
+            }
+
+            .site-title {
+                font-size: 1.5rem;
+            }
+
+            .logo {
+                height: 35px;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .container {
+                padding: 15px;
+            }
+            
+            .adblocker-card {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="site-header">
+        <div class="nav-container">
+            <div class="logo-section">
+                <img src="static/hmovies.png" alt="Horizon Movies" class="logo">
+                <span class="site-title">Horizon Movies</span>
+            </div>
+            <nav class="nav-links">
+                <a href="/" class="nav-link">🏠 Home</a>
+                <a href="/search" class="nav-link">🔍 Search</a>
+            </nav>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1>🛡️ Recommended Ad Blockers</h1>
+            <p>Enhance your streaming experience by blocking unwanted ads and redirects from third-party video sources</p>
+        </div>
+
+        <div class="warning-box">
+            <h3>⚠️ Important Notice</h3>
+            <p>Our video player loads content from third-party APIs which may contain ads and redirects that are beyond our control. Installing an ad blocker will significantly improve your viewing experience by blocking these unwanted elements.</p>
+        </div>
+
+        <div class="adblocker-grid">
+            <div class="adblocker-card">
+                <div class="recommended-badge">Most Recommended</div>
+                <h3>🚀 uBlock Origin</h3>
+                <p>The most effective and lightweight ad blocker. Open source, privacy-focused, and blocks ads, trackers, and malicious sites without slowing down your browser.</p>
+                <div class="browser-links">
+                    <h4>Use for:</h4>
+                    <a href="https://chromewebstore.google.com/detail/ublock-origin/cjpalhdlnbpafiamejdnhcphjbkeiagm" class="browser-link" target="_blank">Chrome</a>
+                    <a href="https://addons.mozilla.org/en-US/firefox/addon/ublock-origin/" class="browser-link" target="_blank">Firefox</a>
+                    <a href="https://microsoftedge.microsoft.com/addons/detail/ublock-origin/odfafepnkmbhccpbejgmiehpchacaeak" class="browser-link" target="_blank">Edge</a>
+                    <a href="https://addons.opera.com/en/extensions/details/ublock/" class="browser-link" target="_blank">Opera</a>
+                </div>
+            </div>
+
+            <div class="adblocker-card">
+                <h3>🛡️ AdBlock Plus</h3>
+                <p>One of the most popular ad blockers with customizable filters. Blocks annoying ads, pop-ups, and tracking while allowing acceptable ads by default (can be disabled).</p>
+                <div class="browser-links">
+                    <h4>Use for:</h4>
+                    <a href="https://chromewebstore.google.com/detail/adblock-plus-free-ad-bloc/cfhdojbkjhnklbpkdaibdccddilifddb" class="browser-link" target="_blank">Chrome</a>
+                    <a href="https://addons.mozilla.org/en-US/firefox/addon/adblock-plus/" class="browser-link" target="_blank">Firefox</a>
+                    <a href="https://microsoftedge.microsoft.com/addons/detail/adblock-plus-free-ad-bl/gmgoamodcdcjnbaobigkjelfplakmdhh" class="browser-link" target="_blank">Edge</a>
+                    <a href="https://addons.opera.com/en/extensions/details/opera-ad-blocker/" class="browser-link" target="_blank">Opera</a>
+                </div>
+            </div>
+
+            <div class="adblocker-card">
+                <h3>⚡ AdGuard</h3>
+                <p>Comprehensive ad blocker that also provides protection against malware and phishing. Offers advanced filtering options and works across all websites.</p>
+                <div class="browser-links">
+                    <h4>Use for:</h4>
+                    <a href="https://chromewebstore.google.com/detail/adguard-adblocker/bgnkhhnnamicmpeenaelnjfhikgbkllg" class="browser-link" target="_blank">Chrome</a>
+                    <a href="https://addons.mozilla.org/en-US/firefox/addon/adguard-adblocker/" class="browser-link" target="_blank">Firefox</a>
+                    <a href="https://microsoftedge.microsoft.com/addons/detail/adguard-adblocker/pdffkfellgipmhklpdmokmckkkfcopbh" class="browser-link" target="_blank">Edge</a>
+                    <a href="https://addons.opera.com/en/extensions/details/adguard/" class="browser-link" target="_blank">Opera</a>
+                </div>
+            </div>
+
+            <div class="adblocker-card">
+                <h3>🌟 Ghostery</h3>
+                <p>Focuses on privacy protection by blocking trackers, ads, and analytics scripts. Provides detailed information about what's being blocked on each website.</p>
+                <div class="browser-links">
+                    <h4>Use for:</h4>
+                    <a href="https://chromewebstore.google.com/detail/ghostery-–-privacy-ad-blo/mlomiejdfkolichcflejclcbmpeaniij" class="browser-link" target="_blank">Chrome</a>
+                    <a href="https://addons.mozilla.org/en-US/firefox/addon/ghostery/" class="browser-link" target="_blank">Firefox</a>
+                    <a href="https://microsoftedge.microsoft.com/addons/detail/ghostery-–-privacy-ad-bl/fclbdkbhjlgkbpfldjodgjncejkkjcme" class="browser-link" target="_blank">Edge</a>
+                    <a href="https://addons.opera.com/en/extensions/details/ghostery/" class="browser-link" target="_blank">Opera</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="instructions">
+            <h3>📋 Quick Installation Guide</h3>
+            <div class="step">
+                <strong>Step 1:</strong> Click on your preferred ad blocker link above for your browser
+            </div>
+            <div class="step">
+                <strong>Step 2:</strong> Click "Add to Chrome/Firefox/Edge" or "Install" button
+            </div>
+            <div class="step">
+                <strong>Step 3:</strong> Confirm the installation when prompted
+            </div>
+            <div class="step">
+                <strong>Step 4:</strong> The extension icon will appear in your browser toolbar
+            </div>
+            <div class="step">
+                <strong>Step 5:</strong> Refresh our website and enjoy ad-free streaming!
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>💡 <strong>Pro Tip:</strong> We recommend uBlock Origin for the best performance and privacy protection. All listed ad blockers are free and safe to use.</p>
+        </div>
+    </div>
+</body>
+</html>
