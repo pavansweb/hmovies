@@ -93,6 +93,10 @@ def search_movies(query, page):
 def home():
     return render_template('index.html')
 
+@app.route('/adblockers')
+def adblockers():
+    return render_template('adblockers.html')
+
 @app.route('/movie/<int:movie_id>')
 def movie(movie_id):
     try:
